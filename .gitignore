@@ -1,0 +1,8 @@
+target/
+out/
+uploads/
+*.log
+.idea/
+.vscode/
+.backend-export/
+HELP.md
