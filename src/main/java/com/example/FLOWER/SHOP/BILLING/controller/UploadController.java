@@ -24,7 +24,7 @@ public class UploadController {
     }
 
     @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> getUploadedFile(@PathVariable String filename) throws IOException {
+    public ResponseEntity<Resource> getUploadedFile(@PathVariable("filename") String filename) throws IOException {
         Resource resource = fileStorageService.loadFileAsResource(filename);
         String contentType = URLConnection.guessContentTypeFromName(resource.getFilename());
         if (contentType == null) {

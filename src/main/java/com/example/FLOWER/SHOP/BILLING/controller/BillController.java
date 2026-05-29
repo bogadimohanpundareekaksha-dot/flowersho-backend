@@ -25,31 +25,32 @@ public class BillController {
 
     @PostMapping
     public ResponseEntity<Bill> createBill(
-            @RequestParam Long customerId,
-            @RequestParam Double totalAmount,
-            @RequestParam Double paidAmount,
-            @RequestParam String billDate,
-            @RequestParam(required = false) String paymentMode,
-            @RequestParam(required = false) String notes,
-            @RequestParam(required = false) MultipartFile billImage) {
+            @RequestParam("customerId") Long customerId,
+            @RequestParam("totalAmount") Double totalAmount,
+            @RequestParam("paidAmount") Double paidAmount,
+            @RequestParam("billDate") String billDate,
+            @RequestParam(value = "paymentMode", required = false) String paymentMode,
+            @RequestParam(value = "notes", required = false) String notes,
+            @RequestParam(value = "billImage", required = false) MultipartFile billImage) {
         Customer customer = customerService.findById(customerId);
         Bill result = billService.createBill(customer, totalAmount, paidAmount, paymentMode, LocalDate.parse(billDate), billImage, notes);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{billId}")
-    public ResponseEntity<Bill> updateBill(
-            @PathVariable Long billId,
-            @RequestParam Double paidAmount,
-            @RequestParam Double dueAmount,
-            @RequestParam String billDate,
-            @RequestParam(required = false) String notes) {
-        Bill result = billService.updateBill(billId, paidAmount, dueAmount, LocalDate.parse(billDate), notes);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Void> updateBill(
+            @PathVariable("billId") Long billId,
+            @RequestParam("totalAmount") Double totalAmount,
+            @RequestParam("paidAmount") Double paidAmount,
+            @RequestParam("billDate") String billDate,
+            @RequestParam(value = "notes", required = false) String notes,
+            @RequestParam(value = "billImage", required = false) MultipartFile billImage) {
+        billService.updateBill(billId, totalAmount, paidAmount, LocalDate.parse(billDate), notes, billImage);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<Bill>> getBillsByCustomer(@PathVariable Long customerId) {
+    public ResponseEntity<List<Bill>> getBillsByCustomer(@PathVariable("customerId") Long customerId) {
         Customer customer = customerService.findById(customerId);
         return ResponseEntity.ok(billService.findByCustomer(customer));
     }

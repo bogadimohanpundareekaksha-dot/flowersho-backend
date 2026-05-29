@@ -37,13 +37,13 @@ public class PaymentController {
     }
 
     @PutMapping("/{paymentId}")
-    public ResponseEntity<Payment> updatePayment(@PathVariable Long paymentId, @RequestBody com.example.FLOWER.SHOP.BILLING.dto.PaymentDto dto) {
+    public ResponseEntity<Payment> updatePayment(@PathVariable("paymentId") Long paymentId, @RequestBody com.example.FLOWER.SHOP.BILLING.dto.PaymentDto dto) {
         Payment updated = paymentService.updatePayment(paymentId, dto.getAmountPaid(), dto.getPaymentDate(), dto.getPaymentMode(), dto.getNotes());
         return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/bill/{billId}")
-    public ResponseEntity<List<Payment>> getPaymentsForBill(@PathVariable Long billId) {
+    public ResponseEntity<List<Payment>> getPaymentsForBill(@PathVariable("billId") Long billId) {
         Bill bill = billService.findById(billId);
         return ResponseEntity.ok(paymentService.findPaymentsByBill(bill));
     }

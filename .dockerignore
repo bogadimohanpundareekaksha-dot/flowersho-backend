@@ -4,4 +4,8 @@ target
 uploads
 .idea
 .vscode
+out
+separated-repositories
+frontend/node_modules
+frontend/dist
 HELP.md

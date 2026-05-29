@@ -74,14 +74,35 @@ public class BillService {
         return saved;
     }
 
-    public Bill updateBill(Long billId, double paidAmount, double dueAmount, LocalDate billDate, String notes) {
+    public Bill updateBill(Long billId, double totalAmount, double paidAmount, LocalDate billDate, String notes, MultipartFile billFile) {
         Bill saved = billRepository.findById(billId)
                 .orElseThrow(() -> new IllegalArgumentException("Bill not found"));
+        double dueAmount = Math.max(0, totalAmount - paidAmount);
+        saved.setTotalAmount(totalAmount);
         saved.setPaidAmount(paidAmount);
         saved.setDueAmount(dueAmount);
         saved.setBillDate(billDate);
         saved.setNotes(notes);
-        saved.setStatus(calculateStatus(paidAmount, saved.getTotalAmount()));
+        saved.setStatus(calculateStatus(paidAmount, totalAmount));
+
+        String filename = fileStorageService.storeFile(billFile);
+        if (filename != null) {
+            saved.setBillImageUrl(filename);
+            List<UploadedImage> existingImages = uploadedImageRepository.findByBillIdOrderByUploadedAtDesc(saved.getId());
+            UploadedImage image = existingImages.isEmpty()
+                    ? UploadedImage.builder()
+                    .customer(saved.getCustomer())
+                    .bill(saved)
+                    .description("Bill image upload")
+                    .build()
+                    : existingImages.get(0);
+            image.setFilename(filename);
+            image.setUrl(filename);
+            image.setCustomer(saved.getCustomer());
+            image.setBill(saved);
+            uploadedImageRepository.save(image);
+        }
+
         return billRepository.save(saved);
     }
 

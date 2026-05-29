@@ -26,7 +26,7 @@ public class DashboardController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<DashboardSummaryDto> getSummary(@RequestParam(required = false) String month) {
+    public ResponseEntity<DashboardSummaryDto> getSummary(@RequestParam(value = "month", required = false) String month) {
         List<Bill> bills = billRepository.findAll();
 
         if (month != null && !month.isBlank()) {

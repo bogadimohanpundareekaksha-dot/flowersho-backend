@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface UploadedImageRepository extends JpaRepository<UploadedImage, Long> {
     List<UploadedImage> findByCustomerIdOrderByUploadedAtDesc(Long customerId);
+    List<UploadedImage> findByBillIdOrderByUploadedAtDesc(Long billId);
 }

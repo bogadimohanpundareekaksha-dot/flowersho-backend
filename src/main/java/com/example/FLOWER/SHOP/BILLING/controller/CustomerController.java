@@ -70,14 +70,14 @@ public class CustomerController {
                             .build();
                 })
                 .filter(customer -> customer.getDueAmount() > 0)
-                .sorted(Comparator.comparing(CustomerBalanceDto::getDueAmount))
+                .sorted(Comparator.comparing(CustomerBalanceDto::getDueAmount).reversed())
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dueCustomers);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchCustomer(@RequestParam String query) {
+    public ResponseEntity<?> searchCustomer(@RequestParam("query") String query) {
         Customer customer = customerService.findByMobileNumber(query).orElse(null);
         if (customer == null) {
             List<Customer> byName = customerService.findByName(query);
